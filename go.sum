@@ -1,0 +1,4 @@
+github.com/matoous/go-nanoid v1.4.1 h1:Yag04X+qPMDtYbyJsMDhoe8rP5kRl293b2QK8KRp2SE=
+github.com/matoous/go-nanoid v1.4.1/go.mod h1:fvGBnhcQ+zcrB3qJIG32PAN11J/y1IYkGX2/VeHzuH0=
+github.com/squzy/squzy_generated v1.7.2-0.20200530184113-0f8e4a14c826 h1:/GqtCjWK3LUUnPHNg2GTAdeATQVeEX6uKyAVaQaQh2E=
+github.com/squzy/squzy_generated v1.7.2-0.20200530184113-0f8e4a14c826/go.mod h1:VVJE2MYsmy/GIEjGt+8UsM6DNDA5mp0+2Uhri7A5fco=
