@@ -10,6 +10,6 @@ func NewRequest(trx *core.Transaction, req *http.Request) *http.Request {
 		return req
 	}
 	// @TODO set meta here
-	req.Header.Add(trx.GetApplication().TracingHeader, trx.Id)
+	req.Header.Add(trx.GetApplication().GetTracingHeader(), trx.Id)
 	return req
 }

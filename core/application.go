@@ -10,9 +10,9 @@ import (
 )
 
 type Application struct {
-	Id string
-	MonitoringHost string
-	TracingHeader string
+	id string
+	monitoringHost string
+	tracingHeader string
 }
 
 type Options struct {
@@ -21,8 +21,25 @@ type Options struct {
 	ApplicationHost string
 }
 
-func (a *Application) CreateTransaction(name string, trType api.TransactionType, parent *Transaction) (*Transaction, error) {
+func (a *Application) CreateTransaction(name string, trType api.TransactionType, parent *Transaction) (*Transaction) {
+	if a == nil {
+		return nil
+	}
 	return createTransaction(name, trType, nil, a)
+}
+
+func (a *Application) GetTracingHeader() string {
+	if a == nil {
+		return ""
+	}
+	return a.tracingHeader
+}
+
+func (a *Application) GetID() string {
+	if a == nil {
+		return ""
+	}
+	return a.id
 }
 
 func CreateApplication(client *http.Client, opts *Options) (*Application, error) {
@@ -76,8 +93,8 @@ func CreateApplication(client *http.Client, opts *Options) (*Application, error)
 	}
 
 	return &Application{
-		Id: responseJson.Data.ApplicationID,
-		MonitoringHost: opts.MonitoringHost,
-		TracingHeader: responseJson.Data.TracingHeader,
+		id: responseJson.Data.ApplicationID,
+		monitoringHost: opts.MonitoringHost,
+		tracingHeader: responseJson.Data.TracingHeader,
 	}, nil
 }
