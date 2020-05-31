@@ -83,10 +83,10 @@ func createTransaction(name string, trType api.TransactionType, parent *Transact
 	}
 }
 
-func GetTransactionFromContext(ctx context.Context) (*Transaction, error) {
+func GetTransactionFromContext(ctx context.Context) (*Transaction) {
 	trx, ok := ctx.Value(CONTEXT_KEY).(*Transaction)
 	if ok {
-		return trx, nil
+		return trx
 	}
-	return nil, errNotFound
+	return nil
 }
