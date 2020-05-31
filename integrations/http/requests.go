@@ -1,4 +1,4 @@
-package requests
+package squzy_http
 
 import (
 	"context"
@@ -8,14 +8,12 @@ import (
 
 type roundTripperFunc func(*http.Request) (*http.Response, error)
 
-func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
+func (fn roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) { return fn(r) }
 
 func NewRequest(trx *core.Transaction, req *http.Request) *http.Request {
 	if trx == nil || trx.GetApplication() == nil {
 		return req
 	}
-	trx.SetMeta()
-	req.Header.Add(trx.GetApplication().GetTracingHeader(), trx.Id)
 	return req.WithContext(context.WithValue(req.Context(), core.CONTEXT_KEY, trx))
 }
 
@@ -29,7 +27,7 @@ func NewRoundTripper(parent http.RoundTripper) http.RoundTripper {
 		request.Header.Add(trx.GetApplication().GetTracingHeader(), trx.Id)
 		response, err := parent.RoundTrip(request)
 		//@TODO set meta data
-		trx.End()
+		trx.SetMeta().End()
 		return response, err
 	})
 }

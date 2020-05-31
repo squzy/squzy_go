@@ -19,6 +19,6 @@ func New(app *core.Application) gin.HandlerFunc {
 		context.Next()
 
 		// @TODO set meta
-		trx.End()
+		trx.SetMeta().End()
 	}
 }
