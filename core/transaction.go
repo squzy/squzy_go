@@ -90,3 +90,7 @@ func GetTransactionFromContext(ctx context.Context) (*Transaction) {
 	}
 	return nil
 }
+
+func ContextWithTransaction(ctx context.Context, trx *Transaction) context.Context {
+	return context.WithValue(ctx, CONTEXT_KEY, trx)
+}

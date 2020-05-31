@@ -11,7 +11,7 @@ func New(app *core.Application) gin.HandlerFunc {
 		path := context.FullPath()
 
 		trx := app.CreateTransaction(path, api.TransactionType_TRANSACTION_TYPE_ROUTER, &core.Transaction{
-			Id: app.GetID(),
+			Id: context.GetHeader(app.GetTracingHeader()),
 		})
 
 		context.Set(core.CONTEXT_KEY, trx)
