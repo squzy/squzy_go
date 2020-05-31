@@ -2,8 +2,8 @@ package squyz_gin
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/squzy/squzy_go/core"
 	api "github.com/squzy/squzy_generated/generated/proto/v1"
+	"github.com/squzy/squzy_go/core"
 )
 
 func New(app *core.Application) gin.HandlerFunc {
@@ -15,9 +15,10 @@ func New(app *core.Application) gin.HandlerFunc {
 		})
 
 		context.Set(core.CONTEXT_KEY, trx)
-		// @TODO set meta
+
 		context.Next()
 
+		// @TODO set meta
 		trx.End()
 	}
 }
