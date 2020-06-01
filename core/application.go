@@ -88,9 +88,6 @@ func CreateApplication(client *http.Client, opts *Options) (*Application, error)
 	if err != nil {
 		return nil, err
 	}
-	if client == nil {
-		client = http.DefaultClient
-	}
 	return &Application{
 		id: responseJson.Data.ApplicationID,
 		monitoringHost: opts.MonitoringHost,

@@ -6,6 +6,9 @@ import (
 )
 
 func sendHttp(client *http.Client, req *http.Request) ([]byte, error) {
+	if client == nil {
+		client = http.DefaultClient
+	}
 	response, err := client.Do(req)
 
 	if err != nil {
