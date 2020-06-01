@@ -26,8 +26,17 @@ func NewRoundTripper(parent http.RoundTripper) http.RoundTripper {
 		trx := core.GetTransactionFromContext(request.Context())
 		request.Header.Add(trx.GetApplication().GetTracingHeader(), trx.Id)
 		response, err := parent.RoundTrip(request)
-		//@TODO set meta data
-		trx.SetMeta().End()
+		var path string
+
+		if request.URL != nil {
+			path = request.URL.Path
+		}
+		trx.SetMeta(&core.TransactionMeta{
+			Host: request.Host,
+			Path: path,
+			Method: request.Method,
+		}).End(err)
+
 		return response, err
 	})
 }

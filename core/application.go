@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	api "github.com/squzy/squzy_generated/generated/proto/v1"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -13,6 +12,7 @@ type Application struct {
 	id string
 	monitoringHost string
 	tracingHeader string
+	httpClient *http.Client
 }
 
 type Options struct {
@@ -42,6 +42,13 @@ func (a *Application) GetID() string {
 	return a.id
 }
 
+func (a *Application) GetHttpClient() *http.Client {
+	if a == nil {
+		return nil
+	}
+	return a.httpClient
+}
+
 func CreateApplication(client *http.Client, opts *Options) (*Application, error) {
 	type reqBody struct {
 		name string `json:"name"`
@@ -61,17 +68,7 @@ func CreateApplication(client *http.Client, opts *Options) (*Application, error)
 		return nil, err
 	}
 
-	response, err := client.Do(r)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if response != nil {
-		defer response.Body.Close()
-	}
-
-	bodyBytes, err := ioutil.ReadAll(response.Body)
+	bodyBytes, err := sendHttp(client, r)
 
 	if err != nil {
 		return nil, err
@@ -91,10 +88,13 @@ func CreateApplication(client *http.Client, opts *Options) (*Application, error)
 	if err != nil {
 		return nil, err
 	}
-
+	if client == nil {
+		client = http.DefaultClient
+	}
 	return &Application{
 		id: responseJson.Data.ApplicationID,
 		monitoringHost: opts.MonitoringHost,
 		tracingHeader: responseJson.Data.TracingHeader,
+		httpClient: client,
 	}, nil
 }
