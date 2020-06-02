@@ -32,8 +32,8 @@ func NewRoundTripper(parent http.RoundTripper) http.RoundTripper {
 			path = request.URL.Path
 		}
 		trx.SetMeta(&core.TransactionMeta{
-			Host: request.Host,
-			Path: path,
+			Host:   request.Host,
+			Path:   path,
 			Method: request.Method,
 		}).End(err)
 

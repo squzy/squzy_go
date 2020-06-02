@@ -91,7 +91,7 @@ func (t *Transaction) End(err error) {
 	if err != nil {
 		return
 	}
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/v1/applications/%s/transactions", t.GetApplication().monitoringHost ,t.GetApplication().GetID()), bytes.NewReader(b))
+	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/v1/applications/%s/transactions", t.GetApplication().monitoringHost, t.GetApplication().GetID()), bytes.NewReader(b))
 	if err != nil {
 		return
 	}

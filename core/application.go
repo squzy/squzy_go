@@ -9,20 +9,20 @@ import (
 )
 
 type Application struct {
-	id string
+	id             string
 	monitoringHost string
-	host string
-	tracingHeader string
-	httpClient *http.Client
+	host           string
+	tracingHeader  string
+	httpClient     *http.Client
 }
 
 type Options struct {
-	MonitoringHost string
+	MonitoringHost  string
 	ApplicationName string
 	ApplicationHost string
 }
 
-func (a *Application) CreateTransaction(name string, trType api.TransactionType, parent *Transaction) (*Transaction) {
+func (a *Application) CreateTransaction(name string, trType api.TransactionType, parent *Transaction) *Transaction {
 	if a == nil {
 		return nil
 	}
@@ -83,7 +83,7 @@ func CreateApplication(client *http.Client, opts *Options) (*Application, error)
 	}
 
 	type res struct {
-		Data struct{
+		Data struct {
 			ApplicationID string `json:"application_id"`
 			TracingHeader string `json:"tracing_header"`
 		} `json:"data"`
@@ -97,10 +97,10 @@ func CreateApplication(client *http.Client, opts *Options) (*Application, error)
 		return nil, err
 	}
 	return &Application{
-		id: responseJson.Data.ApplicationID,
+		id:             responseJson.Data.ApplicationID,
 		monitoringHost: opts.MonitoringHost,
-		host: opts.ApplicationHost,
-		tracingHeader: responseJson.Data.TracingHeader,
-		httpClient: client,
+		host:           opts.ApplicationHost,
+		tracingHeader:  responseJson.Data.TracingHeader,
+		httpClient:     client,
 	}, nil
 }

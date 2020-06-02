@@ -19,7 +19,7 @@ func NewClientUnaryInterceptor(app *core.Application) grpc.UnaryClientIntercepto
 		md.Set(app.GetTracingHeader(), trx.Id)
 		err := invoker(metadata.NewOutgoingContext(ctx, md), method, req, reply, cc, opts...)
 		trx.SetMeta(&core.TransactionMeta{
-			Host: cc.Target(),
+			Host:   cc.Target(),
 			Path:   method,
 			Method: "RPC",
 		}).End(err)
@@ -41,7 +41,6 @@ func (s serverStreamWrap) Context() context.Context {
 	ctx := s.ServerStream.Context()
 	return core.ContextWithTransaction(ctx, s.trx)
 }
-
 
 func (s clientStreamWrap) RecvMsg(m interface{}) error {
 	err := s.ClientStream.RecvMsg(m)
@@ -66,13 +65,13 @@ func NewClientStreamUnaryInterceptor(app *core.Application) grpc.StreamClientInt
 			return s, err
 		}
 		trx.SetMeta(&core.TransactionMeta{
-			Host: cc.Target(),
+			Host:   cc.Target(),
 			Path:   method,
 			Method: "RPC",
 		}).End(err)
 		return &clientStreamWrap{
 			ClientStream: s,
-			trx: trx,
+			trx:          trx,
 		}, nil
 	}
 }
@@ -97,7 +96,7 @@ func NewServerStreamInterceptor(app *core.Application) grpc.StreamServerIntercep
 		trx.SetMeta(&core.TransactionMeta{
 			Path:   info.FullMethod,
 			Method: "RPC",
-			Host: app.GetHost(),
+			Host:   app.GetHost(),
 		}).End(err)
 		return err
 	}
@@ -120,7 +119,7 @@ func NewServerUnaryInterceptor(app *core.Application) grpc.UnaryServerIntercepto
 		trx.SetMeta(&core.TransactionMeta{
 			Path:   info.FullMethod,
 			Method: "RPC",
-			Host: app.GetHost(),
+			Host:   app.GetHost(),
 		})
 		resp, err := handler(core.ContextWithTransaction(ctx, trx), req)
 
@@ -128,4 +127,3 @@ func NewServerUnaryInterceptor(app *core.Application) grpc.UnaryServerIntercepto
 		return resp, err
 	}
 }
-

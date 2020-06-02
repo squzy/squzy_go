@@ -15,7 +15,7 @@ func sendHttp(client *http.Client, req *http.Request) ([]byte, error) {
 		return nil, err
 	}
 
-	if response != nil && response.Body!= nil {
+	if response != nil && response.Body != nil {
 		defer response.Body.Close()
 	}
 
