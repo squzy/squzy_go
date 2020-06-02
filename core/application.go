@@ -11,6 +11,7 @@ import (
 type Application struct {
 	id string
 	monitoringHost string
+	host string
 	tracingHeader string
 	httpClient *http.Client
 }
@@ -40,6 +41,13 @@ func (a *Application) GetID() string {
 		return ""
 	}
 	return a.id
+}
+
+func (a *Application) GetHost() string {
+	if a == nil {
+		return ""
+	}
+	return a.host
 }
 
 func (a *Application) GetHttpClient() *http.Client {
@@ -91,6 +99,7 @@ func CreateApplication(client *http.Client, opts *Options) (*Application, error)
 	return &Application{
 		id: responseJson.Data.ApplicationID,
 		monitoringHost: opts.MonitoringHost,
+		host: opts.ApplicationHost,
 		tracingHeader: responseJson.Data.TracingHeader,
 		httpClient: client,
 	}, nil

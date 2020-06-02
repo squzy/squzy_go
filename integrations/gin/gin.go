@@ -24,6 +24,7 @@ func New(app *core.Application) gin.HandlerFunc {
 		trx.SetMeta(&core.TransactionMeta{
 			Path: path,
 			Method: method,
+			Host: app.GetHost(),
 		})
 
 		context.Set(core.CONTEXT_KEY, trx)

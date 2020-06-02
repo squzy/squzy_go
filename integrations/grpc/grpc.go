@@ -97,6 +97,7 @@ func NewServerStreamInterceptor(app *core.Application) grpc.StreamServerIntercep
 		trx.SetMeta(&core.TransactionMeta{
 			Path:   info.FullMethod,
 			Method: "RPC",
+			Host: app.GetHost(),
 		}).End(err)
 		return err
 	}
@@ -119,6 +120,7 @@ func NewServerUnaryInterceptor(app *core.Application) grpc.UnaryServerIntercepto
 		trx.SetMeta(&core.TransactionMeta{
 			Path:   info.FullMethod,
 			Method: "RPC",
+			Host: app.GetHost(),
 		})
 		resp, err := handler(core.ContextWithTransaction(ctx, trx), req)
 
