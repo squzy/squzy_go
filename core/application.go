@@ -57,12 +57,13 @@ func (a *Application) GetHttpClient() *http.Client {
 	return a.httpClient
 }
 
+type registerAppRequestBody struct {
+	name string `json:"name"`
+	host string `json:"host"`
+}
+
 func CreateApplication(client *http.Client, opts *Options) (*Application, error) {
-	type reqBody struct {
-		name string `json:"name"`
-		host string `json:"host"`
-	}
-	req := &reqBody{
+	req := &registerAppRequestBody{
 		name: opts.ApplicationName,
 		host: opts.ApplicationHost,
 	}
