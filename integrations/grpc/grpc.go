@@ -16,7 +16,7 @@ func NewClientUnaryInterceptor(app *core.Application) grpc.UnaryClientIntercepto
 		if !ok {
 			md = metadata.New(nil)
 		}
-		md.Set(app.GetTracingHeader(), trx.Id)
+		md.Set(app.GetTracingHeader(), trx.GetId())
 		err := invoker(metadata.NewOutgoingContext(ctx, md), method, req, reply, cc, opts...)
 		trx.SetMeta(&core.TransactionMeta{
 			Host:   cc.Target(),
@@ -59,7 +59,7 @@ func NewClientStreamUnaryInterceptor(app *core.Application) grpc.StreamClientInt
 		if !ok {
 			md = metadata.New(nil)
 		}
-		md.Set(app.GetTracingHeader(), trx.Id)
+		md.Set(app.GetTracingHeader(), trx.GetId())
 		s, err := streamer(metadata.NewOutgoingContext(ctx, md), desc, cc, method, opts...)
 		if err != nil {
 			return s, err

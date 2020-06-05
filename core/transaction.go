@@ -91,11 +91,15 @@ func (t *Transaction) End(err error) {
 	if err != nil {
 		return
 	}
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/v1/applications/%s/transactions", t.GetApplication().monitoringHost, t.GetApplication().GetID()), bytes.NewReader(b))
+	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/v1/applications/%s/transactions", t.GetApplication().GetApiHost(), t.GetApplication().GetID()), bytes.NewReader(b))
 	if err != nil {
 		return
 	}
 	_, _ = sendHttp(t.GetApplication().GetHttpClient(), req)
+}
+
+func (t *Transaction) GetId() string {
+	return t.Id
 }
 
 func (t *Transaction) GetApplication() *Application {
@@ -109,20 +113,17 @@ func (t *Transaction) CreateTransaction(name string, trType api.TransactionType,
 	if t == nil {
 		return nil
 	}
-	return createTransaction(name, trType, t, t.app)
+	return New(name, trType, t.app, t)
 }
 
 func (t *Transaction) getParentId() string {
 	if t == nil {
 		return ""
 	}
-	if t.Parent != nil {
-		return t.Parent.Id
-	}
-	return ""
+	return t.Parent.GetId()
 }
 
-func createTransaction(name string, trType api.TransactionType, parent *Transaction, application *Application) *Transaction {
+func New(name string, trType api.TransactionType, application *Application, parent *Transaction) *Transaction {
 	id, err := gonanoid.Nanoid()
 	if err != nil {
 		return nil
@@ -146,5 +147,8 @@ func GetTransactionFromContext(ctx context.Context) *Transaction {
 }
 
 func ContextWithTransaction(ctx context.Context, trx *Transaction) context.Context {
+	if trx == nil {
+		return ctx
+	}
 	return context.WithValue(ctx, CONTEXT_KEY, trx)
 }

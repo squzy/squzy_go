@@ -24,7 +24,7 @@ func NewRoundTripper(parent http.RoundTripper) http.RoundTripper {
 		}
 
 		trx := core.GetTransactionFromContext(request.Context())
-		request.Header.Add(trx.GetApplication().GetTracingHeader(), trx.Id)
+		request.Header.Add(trx.GetApplication().GetTracingHeader(), trx.GetId())
 		response, err := parent.RoundTrip(request)
 		var path string
 

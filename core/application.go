@@ -9,15 +9,15 @@ import (
 )
 
 type Application struct {
-	id             string
-	monitoringHost string
-	host           string
-	tracingHeader  string
-	httpClient     *http.Client
+	id            string
+	apiHost       string
+	host          string
+	tracingHeader string
+	httpClient    *http.Client
 }
 
 type Options struct {
-	MonitoringHost  string
+	ApiHost         string
 	ApplicationName string
 	ApplicationHost string
 }
@@ -26,7 +26,7 @@ func (a *Application) CreateTransaction(name string, trType api.TransactionType,
 	if a == nil {
 		return nil
 	}
-	return createTransaction(name, trType, nil, a)
+	return New(name, trType, a, parent)
 }
 
 func (a *Application) GetTracingHeader() string {
@@ -55,6 +55,13 @@ func (a *Application) GetHttpClient() *http.Client {
 		return nil
 	}
 	return a.httpClient
+}
+
+func (a *Application) GetApiHost() string {
+	if a == nil {
+		return ""
+	}
+	return a.apiHost
 }
 
 type registerAppRequestBody struct {
@@ -98,10 +105,10 @@ func CreateApplication(client *http.Client, opts *Options) (*Application, error)
 		return nil, err
 	}
 	return &Application{
-		id:             responseJson.Data.ApplicationID,
-		monitoringHost: opts.MonitoringHost,
-		host:           opts.ApplicationHost,
-		tracingHeader:  responseJson.Data.TracingHeader,
-		httpClient:     client,
+		id:            responseJson.Data.ApplicationID,
+		apiHost:       opts.ApiHost,
+		host:          opts.ApplicationHost,
+		tracingHeader: responseJson.Data.TracingHeader,
+		httpClient:    client,
 	}, nil
 }
