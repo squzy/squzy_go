@@ -2,6 +2,8 @@ package squzy_http
 
 import (
 	"context"
+	"fmt"
+	api "github.com/squzy/squzy_generated/generated/proto/v1"
 	"github.com/squzy/squzy_go/core"
 	"net/http"
 )
@@ -17,20 +19,23 @@ func NewRequest(trx *core.Transaction, req *http.Request) *http.Request {
 	return req.WithContext(context.WithValue(req.Context(), core.CONTEXT_KEY, trx))
 }
 
-func NewRoundTripper(parent http.RoundTripper) http.RoundTripper {
+func NewRoundTripper(app *core.Application, parent http.RoundTripper) http.RoundTripper {
 	return roundTripperFunc(func(request *http.Request) (*http.Response, error) {
 		if nil == parent {
 			parent = http.DefaultTransport
 		}
-
-		trx := core.GetTransactionFromContext(request.Context())
-		request.Header.Add(trx.GetApplication().GetTracingHeader(), trx.GetId())
-		response, err := parent.RoundTrip(request)
 		var path string
 
 		if request.URL != nil {
 			path = request.URL.Path
 		}
+
+		trx := core.GetTransactionFromContext(request.Context())
+		if trx == nil {
+			trx = app.CreateTransaction(fmt.Sprintf("%s/%s", request.Host, path), api.TransactionType_TRANSACTION_TYPE_HTTP, nil)
+		}
+		request.Header.Add(app.GetTracingHeader(), trx.GetId())
+		response, err := parent.RoundTrip(request)
 		trx.SetMeta(&core.TransactionMeta{
 			Host:   request.Host,
 			Path:   path,
