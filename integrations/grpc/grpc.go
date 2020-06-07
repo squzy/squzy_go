@@ -12,7 +12,7 @@ import (
 
 func NewClientUnaryInterceptor(app *core.Application) grpc.UnaryClientInterceptor {
 	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
-		trx := app.CreateTransaction(fmt.Sprintf("%s/%s",method, cc.Target()), api.TransactionType_TRANSACTION_TYPE_GRPC, core.GetTransactionFromContext(ctx))
+		trx := app.CreateTransaction(fmt.Sprintf("%s/%s", cc.Target(), method), api.TransactionType_TRANSACTION_TYPE_GRPC, core.GetTransactionFromContext(ctx))
 		md, ok := metadata.FromOutgoingContext(ctx)
 		if !ok {
 			md = metadata.New(nil)
@@ -55,7 +55,7 @@ func (s clientStreamWrap) RecvMsg(m interface{}) error {
 
 func NewClientStreamUnaryInterceptor(app *core.Application) grpc.StreamClientInterceptor {
 	return func(ctx context.Context, desc *grpc.StreamDesc, cc *grpc.ClientConn, method string, streamer grpc.Streamer, opts ...grpc.CallOption) (grpc.ClientStream, error) {
-		trx := app.CreateTransaction(fmt.Sprintf("%s/%s",method, cc.Target()), api.TransactionType_TRANSACTION_TYPE_GRPC, core.GetTransactionFromContext(ctx))
+		trx := app.CreateTransaction(fmt.Sprintf("%s/%s", cc.Target(), method), api.TransactionType_TRANSACTION_TYPE_GRPC, core.GetTransactionFromContext(ctx))
 		md, ok := metadata.FromOutgoingContext(ctx)
 		if !ok {
 			md = metadata.New(nil)

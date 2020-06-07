@@ -32,7 +32,7 @@ func NewRoundTripper(app *core.Application, parent http.RoundTripper) http.Round
 
 		trx := core.GetTransactionFromContext(request.Context())
 		if trx == nil {
-			trx = app.CreateTransaction(fmt.Sprintf("%s/%s", request.Host, path), api.TransactionType_TRANSACTION_TYPE_HTTP, nil)
+			trx = app.CreateTransaction(fmt.Sprintf("%s%s", request.Host, path), api.TransactionType_TRANSACTION_TYPE_HTTP, nil)
 		}
 		request.Header.Add(app.GetTracingHeader(), trx.GetId())
 		response, err := parent.RoundTrip(request)
