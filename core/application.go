@@ -65,14 +65,15 @@ func (a *Application) GetApiHost() string {
 }
 
 type registerAppRequestBody struct {
-	name string `json:"name"`
-	host string `json:"host"`
+	name    string `json:"name"`
+	host    string `json:"host,omitempty"`
+	agentId string `json:"agentId,omitempty"`
 }
 
 func CreateApplication(client *http.Client, opts *Options) (*Application, error) {
 	req := &registerAppRequestBody{
-		name: opts.ApplicationName,
-		host: opts.ApplicationHost,
+		name:    opts.ApplicationName,
+		host:    opts.ApplicationHost,
 	}
 	body, err := json.Marshal(req)
 	if err != nil {
