@@ -3,6 +3,7 @@ package core
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	api "github.com/squzy/squzy_generated/generated/proto/v1"
 	"net/http"
@@ -21,6 +22,10 @@ type Options struct {
 	ApplicationName string
 	ApplicationHost string
 }
+
+var (
+	errMissingResponseBody = errors.New("missing response body")
+)
 
 func (a *Application) CreateTransaction(name string, trType api.TransactionType, parent *Transaction) *Transaction {
 	if a == nil {
@@ -65,21 +70,22 @@ func (a *Application) GetApiHost() string {
 }
 
 type registerAppRequestBody struct {
-	name    string `json:"name"`
-	host    string `json:"host,omitempty"`
-	agentId string `json:"agentId,omitempty"`
+	Name    string `json:"name"`
+	Host    string `json:"host,omitempty"`
+	AgentId string `json:"agentId,omitempty"`
 }
 
 func CreateApplication(client *http.Client, opts *Options) (*Application, error) {
 	req := &registerAppRequestBody{
-		name:    opts.ApplicationName,
-		host:    opts.ApplicationHost,
+		Name:    opts.ApplicationName,
+		Host:    opts.ApplicationHost,
+		AgentId: "",
 	}
 	body, err := json.Marshal(req)
 	if err != nil {
 		return nil, err
 	}
-	r, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/v1/applications", opts.ApplicationHost), bytes.NewReader(body))
+	r, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/v1/applications", opts.ApiHost), bytes.NewReader(body))
 
 	if err != nil {
 		return nil, err
@@ -92,10 +98,10 @@ func CreateApplication(client *http.Client, opts *Options) (*Application, error)
 	}
 
 	type res struct {
-		Data struct {
+		Data *struct {
 			ApplicationID string `json:"application_id"`
 			TracingHeader string `json:"tracing_header"`
-		} `json:"data"`
+		} `json:"data,omitempty"`
 	}
 
 	responseJson := &res{}
@@ -105,6 +111,11 @@ func CreateApplication(client *http.Client, opts *Options) (*Application, error)
 	if err != nil {
 		return nil, err
 	}
+
+	if responseJson.Data == nil  {
+		return nil, errMissingResponseBody
+	}
+
 	return &Application{
 		id:            responseJson.Data.ApplicationID,
 		apiHost:       opts.ApiHost,
