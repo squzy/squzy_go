@@ -23,8 +23,8 @@ type transactionRequestMsg struct {
 	Id       string                `json:"id"`
 	ParentId string                `json:"string,omitempty"`
 	Name     string                `json:"name"`
-	DateFrom int64                 `json:"dateFrom"`
-	DateTo   int64                 `json:"dateTo"`
+	DateFrom string                 `json:"dateFrom"`
+	DateTo   string                 `json:"dateTo"`
 	Status   api.TransactionStatus `json:"status"`
 	Type     api.TransactionType   `json:"type"`
 	Error    *trxError             `json:"error,omitempty"`
@@ -79,8 +79,8 @@ func (t *Transaction) End(err error) {
 		Id:       t.Id,
 		ParentId: t.getParentId(),
 		Name:     t.Name,
-		DateFrom: t.startTime.UnixNano(),
-		DateTo:   t.endTime.UnixNano(),
+		DateFrom: fmt.Sprintf("%d", t.startTime.UnixNano()),
+		DateTo:   fmt.Sprintf("%d", t.endTime.UnixNano()),
 		Status:   status,
 		Type:     t.Type,
 		Error:    trErr,
