@@ -112,7 +112,7 @@ func CreateApplication(client *http.Client, opts *Options) (*Application, error)
 		return nil, err
 	}
 
-	if responseJson.Data == nil  {
+	if responseJson.Data == nil {
 		return nil, errMissingResponseBody
 	}
 
