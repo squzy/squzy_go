@@ -21,10 +21,10 @@ type Transactor interface {
 
 type transactionRequestMsg struct {
 	Id       string                `json:"id"`
-	ParentId string                `json:"string,omitempty"`
+	ParentId string                `json:"parentId,omitempty"`
 	Name     string                `json:"name"`
-	DateFrom string                 `json:"dateFrom"`
-	DateTo   string                 `json:"dateTo"`
+	DateFrom string                `json:"dateFrom"`
+	DateTo   string                `json:"dateTo"`
 	Status   api.TransactionStatus `json:"status"`
 	Type     api.TransactionType   `json:"type"`
 	Error    *trxError             `json:"error,omitempty"`
