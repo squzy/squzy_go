@@ -68,7 +68,7 @@ Then you need to add Squzy middleware in your gin.Engine:
 
 ```go
 r := gin.New()
-r.Use(squyz_gin.New(application))
+r.Use(squzy_gin.New(application))
 ```
 
 ## http integration
