@@ -99,6 +99,9 @@ func (t *Transaction) End(err error) {
 }
 
 func (t *Transaction) GetId() string {
+	if t == nil {
+		return ""
+	}
 	return t.Id
 }
 
