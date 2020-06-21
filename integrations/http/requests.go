@@ -26,15 +26,15 @@ func NewRoundTripper(app *core.Application, parent http.RoundTripper) http.Round
 			parent = http.DefaultTransport
 		}
 		var path string
-
+		host := request.Host
 		if request.URL != nil {
 			path = request.URL.Path
+			host = request.URL.Host
 		}
-		fmt.Println(request.URL)
-		trx := app.CreateTransaction(fmt.Sprintf("%s%s", request.Host, path), api.TransactionType_TRANSACTION_TYPE_HTTP, core.GetTransactionFromContext(request.Context()))
+		trx := app.CreateTransaction(fmt.Sprintf("%s%s", host, path), api.TransactionType_TRANSACTION_TYPE_HTTP, core.GetTransactionFromContext(request.Context()))
 		response, err := parent.RoundTrip(request)
 		trx.SetMeta(&core.TransactionMeta{
-			Host:   request.Host,
+			Host:   host,
 			Path:   path,
 			Method: request.Method,
 		}).End(err)
