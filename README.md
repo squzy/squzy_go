@@ -12,7 +12,7 @@ import "github.com/squzy/squzy_go/core"
 ```
 
 ```go
-//client - your http client
+//client - your http client, can be nil
 application, err := core.CreateApplication(client, &core.Options{
 	Name:       "application name",
 	Host:       "host adress",
