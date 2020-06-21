@@ -79,7 +79,7 @@ func NewClientStreamUnaryInterceptor(app *core.Application) grpc.StreamClientInt
 
 func NewServerStreamInterceptor(app *core.Application) grpc.StreamServerInterceptor {
 	return func(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
-		md, ok := metadata.FromOutgoingContext(ss.Context())
+		md, ok := metadata.FromIncomingContext(ss.Context())
 		var parent *core.Transaction
 		if ok {
 			id := md.Get(app.GetTracingHeader())[0]
@@ -105,7 +105,7 @@ func NewServerStreamInterceptor(app *core.Application) grpc.StreamServerIntercep
 
 func NewServerUnaryInterceptor(app *core.Application) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-		md, ok := metadata.FromOutgoingContext(ctx)
+		md, ok := metadata.FromIncomingContext(ctx)
 		var parent *core.Transaction
 		if ok {
 			id := md.Get(app.GetTracingHeader())[0]
