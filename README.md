@@ -87,3 +87,52 @@ client := &http.Client{
     Transport: NewRoundTripper(application, parent),
 }
 ```
+
+## Additional methods
+
+With Squzy core package you cna receive transaction from context:
+
+```go
+import squzy_core "github.com/squzy/squzy_go/core"
+```
+
+```go
+parentTransaction := squzy_core.GetTransactionFromContext(ctx)
+```
+
+You can add your transaction to the other with (the third parameter is used to support interface):
+
+```go
+transaction := parentTransaction.CreateTransaction(
+    "transaction name",
+    trType api.TransactionType,
+    nil,
+)
+```
+
+These methods can be combined:
+
+```go
+transaction := squzy_core.GetTransactionFromContext(ctx).CreateTransaction(
+    "transaction name",
+    api.TransactionType_TRANSACTION_TYPE_GRPC,
+    nil,
+)
+```
+
+For manual transaction creating use:
+
+```go
+transaction := squzy_core.New(
+    "transaction name",
+    api.TransactionType_TRANSACTION_TYPE_GRPC,
+    application,
+    parentTransaction,
+)
+```
+
+For adding your transaction to context use:
+
+```go
+ctxWithTrans := ContextWithTransaction(ctx, transaction)
+```
