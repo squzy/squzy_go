@@ -8,15 +8,16 @@ It can be easily used via GRPC, gin and http requests.
 Before calling the API methods, it is necessary to setup application with two parameters:
 
 ```go
-import "github.com/squzy/squzy_go/core"
+import squzy_core "github.com/squzy/squzy_go/core"
 ```
 
 ```go
 //client - your http client, can be nil
-application, err := core.CreateApplication(client, &core.Options{
-	Name:       "application name",
-	Host:       "host adress",
-})
+app, err := squzy_core.CreateApplication(client, &squzy_core.Options{
+		ApiHost:         "your squzy api host",
+		ApplicationName: "your applciation name",
+		ApplicationHost: "your applciation host",
+	})
 ```
 
 The `AgentId` parameter in options is not used yet.
@@ -26,7 +27,7 @@ The `AgentId` parameter in options is not used yet.
 To use the squzy monitoring with GRPC, import:
 
 ```go
-import "github.com/squzy/squzy_go/squzy_grpc"
+import squzy_grpc "github.com/squzy/squzy_go/integrations/grpc"
 ```
 
 Squzy monitoring allows you to use it on both client and server side.
@@ -60,7 +61,7 @@ server := grpc.NewServer(
 To use the Squzy monitoring with GRPC, import:
 
 ```go
-import "github.com/squzy/squzy_go/squyz_gin"
+import squzy_gin "github.com/squzy/squzy_go/integrations/gin"
 ```
 
 Then you need to add Squzy middleware in your gin.Engine:
@@ -75,7 +76,7 @@ r.Use(squyz_gin.New(application))
 To use Squzy monitoring with http, import:
 
 ```go
-import "github.com/squzy/squzy_go/squzy_http"
+import squzy_http "github.com/squzy/squzy_go/integrations/http"
 ```
 
 The Squzy gor http working through the `http.RoundTripper`.
