@@ -16,6 +16,7 @@ func NewRequest(trx *core.Transaction, req *http.Request) *http.Request {
 	if trx == nil || trx.GetApplication() == nil {
 		return req
 	}
+	req.Header.Add(trx.GetApplication().GetTracingHeader(), trx.GetId())
 	return req.WithContext(context.WithValue(req.Context(), core.CONTEXT_KEY, trx))
 }
 
@@ -29,9 +30,8 @@ func NewRoundTripper(app *core.Application, parent http.RoundTripper) http.Round
 		if request.URL != nil {
 			path = request.URL.Path
 		}
-
+		fmt.Println(request.URL)
 		trx := app.CreateTransaction(fmt.Sprintf("%s%s", request.Host, path), api.TransactionType_TRANSACTION_TYPE_HTTP, core.GetTransactionFromContext(request.Context()))
-		request.Header.Add(app.GetTracingHeader(), trx.GetId())
 		response, err := parent.RoundTrip(request)
 		trx.SetMeta(&core.TransactionMeta{
 			Host:   request.Host,
