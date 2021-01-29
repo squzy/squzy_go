@@ -82,10 +82,10 @@ func NewServerStreamInterceptor(app *core.Application) grpc.StreamServerIntercep
 		md, ok := metadata.FromIncomingContext(ss.Context())
 		var parent *core.Transaction
 		if ok {
-			id := md.Get(app.GetTracingHeader())[0]
-			if id != "" {
+			metaArr := md.Get(app.GetTracingHeader())
+			if len(metaArr) > 0 && metaArr[0] != "" {
 				parent = &core.Transaction{
-					Id: id,
+					Id: metaArr[0],
 				}
 			}
 		}
@@ -108,10 +108,10 @@ func NewServerUnaryInterceptor(app *core.Application) grpc.UnaryServerIntercepto
 		md, ok := metadata.FromIncomingContext(ctx)
 		var parent *core.Transaction
 		if ok {
-			id := md.Get(app.GetTracingHeader())[0]
-			if id != "" {
+			metaArr := md.Get(app.GetTracingHeader())
+			if len(metaArr) > 0 && metaArr[0] != "" {
 				parent = &core.Transaction{
-					Id: id,
+					Id: metaArr[0],
 				}
 			}
 		}
